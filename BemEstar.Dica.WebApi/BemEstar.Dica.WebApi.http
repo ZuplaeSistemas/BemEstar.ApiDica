@@ -1,0 +1,6 @@
+@BemEstar.Dica.WebApi_HostAddress = http://localhost:5205
+
+GET {{BemEstar.Dica.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
