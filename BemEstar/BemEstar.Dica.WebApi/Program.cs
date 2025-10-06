@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
     policy =>
     {
         policy.WithOrigins("http://127.0.0.1:5500")
-            .AllowAnyMethod()   // permite qualquer método (GET, POST, PUT, DELETE...)
+            .AllowAnyMethod()   // permite qualquer m�todo (GET, POST, PUT, DELETE...)
             .AllowAnyHeader();  // permite qualquer header
     });
 });
