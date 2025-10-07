@@ -5,7 +5,7 @@ namespace BemEstar.Dica.Services;
 
 public class DicaService : BaseService<DicaModel>
 {
-    private readonly string _connectionString = "Host-=18.220.9.40;Port=5432;Database=dica;Username=postgres;Password=123456";
+    private readonly string _connectionString = "Host=18.220.9.40;Port=5432;Database=dica;Username=postgres;Password=123456";
     public override void Create(DicaModel model)
     {
         NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -14,7 +14,7 @@ public class DicaService : BaseService<DicaModel>
         string commandText = "INSERT INTO dica (titulo, descricao, categoria) values (@titulo, @descricao, @categoria)";
         NpgsqlCommand insertCommand = new NpgsqlCommand(commandText, connection);
         insertCommand.Parameters.AddWithValue("titulo", model.Titulo);
-        insertCommand.Parameters.AddWithValue("descricao", model.Descrição);
+        insertCommand.Parameters.AddWithValue("descricao", model.Descricao);
         insertCommand.Parameters.AddWithValue("categoria", model.Categoria);
 
         insertCommand.ExecuteNonQuery();
@@ -47,10 +47,10 @@ public class DicaService : BaseService<DicaModel>
             DicaModel dicaModel = new DicaModel();
             dicaModel.Id = Convert.ToInt32(dataReader["id"]);
             dicaModel.Titulo = dataReader["titulo"].ToString();
-            dicaModel.Descrição = dataReader["descricao"].ToString();
+            dicaModel.Descricao = dataReader["descricao"].ToString();
             dicaModel.Categoria = dataReader["categoria"].ToString();
 
-            list.Add(dicaModel);
+            dicaList.Add(dicaModel);
         }
         connection.Close();
         return dicaList;
@@ -71,9 +71,10 @@ public class DicaService : BaseService<DicaModel>
         {
             dicaModel.Id = Convert.ToInt32(dataReader["id"]);
             dicaModel.Titulo = dataReader["titulo"].ToString();
-            dicaModel.Descrição = dataReader["descricao"].ToString();
+            dicaModel.Descricao = dataReader["descricao"].ToString();
             dicaModel.Categoria = dataReader["categoria"].ToString();
         }
+        return dicaModel;
     }
     public override void Update(DicaModel model)
     {
@@ -83,7 +84,7 @@ public class DicaService : BaseService<DicaModel>
         string commandText = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id"; 
         NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
         updateCommand.Parameters.AddWithValue("titulo", model.Titulo);
-        updateCommand.Parameters.AddWithValue("descricao", model.Descrição);
+        updateCommand.Parameters.AddWithValue("descricao", model.Descricao);
         updateCommand.Parameters.AddWithValue("categoria", model.Categoria);
         updateCommand.Parameters.AddWithValue("id", model.Id);
         updateCommand.ExecuteNonQuery();
