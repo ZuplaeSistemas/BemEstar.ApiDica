@@ -1,93 +1,76 @@
+using System;
+using System.Collections.Generic;
 using BemEstar.Dica.Models;
+using BemEstar.Dica.Infrastructure;
 using Npgsql;
 
-namespace BemEstar.Dica.Services;
-
-public class DicaService : BaseService<DicaModel>
+namespace BemEstar.Dica.Services
 {
-    private readonly string _connectionString = "Host=18.220.9.40;Port=5432;Database=dica;Username=postgres;Password=123456";
-    public override void Create(DicaModel model)
+    // Contém os métodos CRUD para DicaModel
+    public class DicaService : BaseDbService
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
+        // Construtor: usa o Singleton da fábrica
+        public DicaService() : base(DbFactorySingleton.Instance) { }
 
-        string commandText = "INSERT INTO dica (titulo, descricao, categoria) values (@titulo, @descricao, @categoria)";
-        NpgsqlCommand insertCommand = new NpgsqlCommand(commandText, connection);
-        insertCommand.Parameters.AddWithValue("titulo", model.Titulo);
-        insertCommand.Parameters.AddWithValue("descricao", model.Descricao);
-        insertCommand.Parameters.AddWithValue("categoria", model.Categoria);
-
-        insertCommand.ExecuteNonQuery();
-    }
-    public override void Delete(int id)
-    {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
-
-        string commandText = "DELETE FROM dica WHERE id = @id";
-        NpgsqlCommand deleteCommand = new NpgsqlCommand(commandText, connection);
-        deleteCommand.Parameters.AddWithValue("id", id);
-        
-        deleteCommand.ExecuteNonQuery();
-    }
-    public override List<DicaModel> Read()
-    {
-        var connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
-        
-        string commandText = "SELECT * FROM dica";
-        NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
-        
-        NpgsqlDataReader dataReader = selectCommand.ExecuteReader();
-
-        List<DicaModel> dicaList = new List<DicaModel>();
-
-        while (dataReader.Read())
+        // Cria uma nova dica
+        public override void Create(DicaModel model)
         {
-            DicaModel dicaModel = new DicaModel();
-            dicaModel.Id = Convert.ToInt32(dataReader["id"]);
-            dicaModel.Titulo = dataReader["titulo"].ToString();
-            dicaModel.Descricao = dataReader["descricao"].ToString();
-            dicaModel.Categoria = dataReader["categoria"].ToString();
+            const string sql = "INSERT INTO dica (titulo, descricao, categoria) VALUES (@titulo, @descricao, @categoria)";
 
-            dicaList.Add(dicaModel);
+            // Chama o método genérico para INSERT/UPDATE/DELETE
+            ExecuteNonQuery(sql,
+                new NpgsqlParameter("@titulo", model.Titulo),
+                new NpgsqlParameter("@descricao", model.Descricao),
+                new NpgsqlParameter("@categoria", model.Categoria));
         }
-        connection.Close();
-        return dicaList;
-    }
-    public override DicaModel ReadById(int id)
-    {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
 
-        string commandText = "SELECT * FROM dica WHERE id = @id";
-        NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
-        selectCommand.Parameters.AddWithValue("id", id);
-
-        NpgsqlDataReader dataReader = selectCommand.ExecuteReader();
-
-        DicaModel dicaModel = new DicaModel();
-        if (dataReader.Read())
+        // Deleta uma dica pelo ID
+        public override void Delete(int id)
         {
-            dicaModel.Id = Convert.ToInt32(dataReader["id"]);
-            dicaModel.Titulo = dataReader["titulo"].ToString();
-            dicaModel.Descricao = dataReader["descricao"].ToString();
-            dicaModel.Categoria = dataReader["categoria"].ToString();
+            const string sql = "DELETE FROM dica WHERE id = @id";
+
+            ExecuteNonQuery(sql, new NpgsqlParameter("@id", id));
         }
-        return dicaModel;
-    }
-    public override void Update(DicaModel model)
-    {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
 
-        string commandText = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id"; 
-        NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
-        updateCommand.Parameters.AddWithValue("titulo", model.Titulo);
-        updateCommand.Parameters.AddWithValue("descricao", model.Descricao);
-        updateCommand.Parameters.AddWithValue("categoria", model.Categoria);
-        updateCommand.Parameters.AddWithValue("id", model.Id);
-        updateCommand.ExecuteNonQuery();
+        // Lê todas as dicas
+        public override List<DicaModel> Read()
+        {
+            const string sql = "SELECT * FROM dica";
 
+            // Chama o método genérico de SELECT que retorna lista
+            return ExecuteQuery(sql, reader => new DicaModel
+            {
+                Id = Convert.ToInt32(reader["id"]),
+                Titulo = reader["titulo"].ToString(),
+                Descricao = reader["descricao"].ToString(),
+                Categoria = reader["categoria"].ToString()
+            });
+        }
+
+        // Lê uma dica específica pelo ID
+        public override DicaModel ReadById(int id)
+        {
+            const string sql = "SELECT * FROM dica WHERE id = @id";
+
+            return ExecuteQuerySingle(sql, reader => new DicaModel
+            {
+                Id = Convert.ToInt32(reader["id"]),
+                Titulo = reader["titulo"].ToString(),
+                Descricao = reader["descricao"].ToString(),
+                Categoria = reader["categoria"].ToString()
+            }, new NpgsqlParameter("@id", id));
+        }
+
+        // Atualiza uma dica existente
+        public override void Update(DicaModel model)
+        {
+            const string sql = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id";
+
+            ExecuteNonQuery(sql,
+                new NpgsqlParameter("@titulo", model.Titulo),
+                new NpgsqlParameter("@descricao", model.Descricao),
+                new NpgsqlParameter("@categoria", model.Categoria),
+                new NpgsqlParameter("@id", model.Id));
+        }
     }
 }
