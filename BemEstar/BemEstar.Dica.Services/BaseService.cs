@@ -1,35 +1,33 @@
-﻿using BemEstar.Dica.Models;
-namespace BemEstar.Dica.Services;
+﻿using System.Collections.Generic;
+using BemEstar.Dica.Models;
+using BemEstar.Dica.Infrastructure;
 
-public class BaseService<T> : Iservice<T> where T : BaseModel
+namespace BemEstar.Dica.Services
 {
-    public static List<T> list  = new List<T>();
-    public virtual void Create(T model)
+    public abstract class BaseService<T> where T : BaseModel
     {
-        list.Add(model);
-    }
+        // Fábrica de conexão fornecida pelo Singleton
+        protected readonly IDbConnectionFactory _connectionFactory;
 
-    public virtual void Delete(int id)
-    {
-        T item = this.ReadById(id);
-        list.Remove(item);
-    }
+       /// Construtor que injeta a fábrica de conexão via Singleton
+        protected BaseService()
+        {
+            _connectionFactory = DbFactorySingleton.Instance;
+        }
 
-    public virtual List<T> Read()
-    {
-        return list;
-    }
+        /// CREATE
+        public abstract void Create(T model);
 
-    public virtual T ReadById(int id)
-    {
-        T item = list.FirstOrDefault(i => i.Id == id);
-        return item;
-    }
+        /// DELETE_BY_ID
+        public abstract void Delete(int id);
 
-    public virtual void Update(T model)
-    {
-        T olditem = this.ReadById(model.Id);
-        this.Delete(olditem.Id);
-        this.Create(model);
+        /// READ_ALL
+        public abstract List<T> Read();
+
+        /// READ_BY_ID
+        public abstract T ReadById(int id);
+
+        /// UPDATE
+        public abstract void Update(T model);
     }
 }

@@ -9,13 +9,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemEstar.Dica.Services", "B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemEstar.Dica.WebApi", "BemEstar.Dica.WebApi\BemEstar.Dica.WebApi.csproj", "{264E2E57-E247-4A21-88E4-F5791D6426F9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
+	ProjectSection(SolutionItems) = preProject
+		EDPPAPCSFM.md = EDPPAPCSFM.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BemEstar.Dica.Infrastructures", "ClassLibrary1\BemEstar.Dica.Infrastructures.csproj", "{4079F33A-E16A-4C73-882D-304609E02585}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{53FBF2DC-2DE3-4E6B-B069-88DF17EF2758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +34,15 @@ Global
 		{264E2E57-E247-4A21-88E4-F5791D6426F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{264E2E57-E247-4A21-88E4-F5791D6426F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{264E2E57-E247-4A21-88E4-F5791D6426F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4079F33A-E16A-4C73-882D-304609E02585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4079F33A-E16A-4C73-882D-304609E02585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4079F33A-E16A-4C73-882D-304609E02585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4079F33A-E16A-4C73-882D-304609E02585}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91B6E8DF-109B-4578-A92C-DC52F7446654}
 	EndGlobalSection
 EndGlobal
