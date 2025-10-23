@@ -1,15 +1,24 @@
 using BemEstar.Dica.Models;
-using Npgsql;
+using Npgsql; //Não deve ter essa dependência, retirar no futuro.
 
 namespace BemEstar.Dica.Services;
 
 public class DicaService : BaseService<DicaModel>
 {
-    private readonly string _connectionString = "Host=18.220.9.40;Port=5432;Database=dica;Username=postgres;Password=123456";
+    private DataBase _dataBase;
+    public DicaService()
+    {
+        this._dataBase = new DataBase(); //Ideal é instanciar a variável quando for ser utilizada.
+    }
     public override void Create(DicaModel model)
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
+
+        //pegar a conexão com o postgres
+        NpgsqlConnection connection = _dataBase.GetConnection();
+
+        //O código abaixo será substituído pelo código acima
+        //NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        //connection.Open();
 
         string commandText = "INSERT INTO dica (titulo, descricao, categoria) values (@titulo, @descricao, @categoria)";
         NpgsqlCommand insertCommand = new NpgsqlCommand(commandText, connection);
@@ -18,23 +27,25 @@ public class DicaService : BaseService<DicaModel>
         insertCommand.Parameters.AddWithValue("categoria", model.Categoria);
 
         insertCommand.ExecuteNonQuery();
+        _dataBase.CloseConnection(connection);
     }
     public override void Delete(int id)
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
+        //pegar a conexão com o postgres
+        NpgsqlConnection connection = _dataBase.GetConnection();
 
         string commandText = "DELETE FROM dica WHERE id = @id";
         NpgsqlCommand deleteCommand = new NpgsqlCommand(commandText, connection);
         deleteCommand.Parameters.AddWithValue("id", id);
         
         deleteCommand.ExecuteNonQuery();
+        _dataBase.CloseConnection(connection);
     }
     public override List<DicaModel> Read()
     {
-        var connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
-        
+        //pegar a conexão com o postgres
+        NpgsqlConnection connection = _dataBase.GetConnection();
+
         string commandText = "SELECT * FROM dica";
         NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
         
@@ -52,13 +63,13 @@ public class DicaService : BaseService<DicaModel>
 
             dicaList.Add(dicaModel);
         }
-        connection.Close();
+        _dataBase.CloseConnection(connection);
         return dicaList;
     }
     public override DicaModel ReadById(int id)
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
+        //pegar a conexão com o postgres
+        NpgsqlConnection connection = _dataBase.GetConnection();
 
         string commandText = "SELECT * FROM dica WHERE id = @id";
         NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
@@ -74,12 +85,13 @@ public class DicaService : BaseService<DicaModel>
             dicaModel.Descricao = dataReader["descricao"].ToString();
             dicaModel.Categoria = dataReader["categoria"].ToString();
         }
+        _dataBase.CloseConnection(connection);
         return dicaModel;
     }
     public override void Update(DicaModel model)
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
+        //pegar a conexão com o postgres
+        NpgsqlConnection connection = _dataBase.GetConnection();
 
         string commandText = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id"; 
         NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
@@ -87,7 +99,8 @@ public class DicaService : BaseService<DicaModel>
         updateCommand.Parameters.AddWithValue("descricao", model.Descricao);
         updateCommand.Parameters.AddWithValue("categoria", model.Categoria);
         updateCommand.Parameters.AddWithValue("id", model.Id);
-        updateCommand.ExecuteNonQuery();
 
+        updateCommand.ExecuteNonQuery();
+        _dataBase.CloseConnection(connection);
     }
 }
