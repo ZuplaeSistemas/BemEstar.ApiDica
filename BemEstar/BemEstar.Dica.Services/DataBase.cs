@@ -9,7 +9,20 @@ namespace BemEstar.Dica.Services
 {
     internal class DataBase
     {
-        private readonly string _connectionString = "Host=18.220.9.40;Port=5432;Database=dica;Username=postgres;Password=123456"; //hardcode: problema de segurança
+        private readonly string _connectionString;
+
+        public DataBase()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory) //Definir local padrão para acessar as confirgurações como o diretório onde está rodando a aplicação
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddUserSecrets<DataBase>()
+                .AddEnvironmentVariables();
+
+            var configuration = builder.Build();
+            this._connectionString = configuration.GetConnectionString("Postgres");
+        }
+
         public NpgsqlConnection GetConnection() 
         {
             NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
