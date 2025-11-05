@@ -10,5 +10,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>07391cb4-a683-484a-935f-29135ab5ebde</UserSecretsId>
-  </PropertyGroup>
+  </Proper  tyGroup>
 </Project>
