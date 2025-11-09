@@ -1,4 +1,5 @@
 using BemEstar.Dica.Infra.Db;
+using BemEstar.Dica.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -29,7 +30,10 @@ builder.Configuration
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<BemEstar.Dica.Infra.Config.AppConfiguration>();
 builder.Services.AddSingleton<NpgsqlConnectionFactory>();
-builder.Services.AddScoped<BemEstar.Dica.Services.DicaService>();
+builder.Services.AddScoped<DicaService>();
+builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaRepository>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
