@@ -7,7 +7,11 @@ namespace BemEstar.Dica.WebApi.Controllers
     [ApiController]
     public class DicaController : ControllerBase
     {
-        private DicaService _service = new DicaService();
+        private DicaService _service;
+        public DicaController(DicaService service)
+        {
+            _service = service;                            
+        }
 
         [HttpGet]
         public List<DicaModel> Get()

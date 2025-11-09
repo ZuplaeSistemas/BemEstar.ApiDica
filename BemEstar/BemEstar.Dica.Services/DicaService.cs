@@ -1,3 +1,4 @@
+using BemEstar.Dica.Infra.Db;
 using BemEstar.Dica.Models;
 using Npgsql; //Não deve ter essa dependência, retirar no futuro.
 
@@ -5,16 +6,16 @@ namespace BemEstar.Dica.Services;
 
 public class DicaService : BaseService<DicaModel>
 {
-    private DataBase _dataBase;
-    public DicaService()
+    private IDbConnectionFactory _dataBase;
+    public DicaService(IDbConnectionFactory dataBase)
     {
-        this._dataBase = DataBase.Instance; //Ideal é instanciar a variável quando for ser utilizada.
+        this._dataBase = dataBase; //Ideal é instanciar a variável quando for ser utilizada.
     }
     public override void Create(DicaModel model)
     {
 
         //pegar a conexão com o postgres
-        using NpgsqlConnection connection = this._dataBase.GetConnection();
+        using NpgsqlConnection connection = (NpgsqlConnection)this._dataBase.GetConnection();
 
         //O código abaixo será substituído pelo código acima
         //NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
@@ -31,7 +32,7 @@ public class DicaService : BaseService<DicaModel>
     public override void Delete(int id)
     {
         //pegar a conexão com o postgres
-        using NpgsqlConnection connection = this._dataBase.GetConnection();
+        using NpgsqlConnection connection = (NpgsqlConnection)this._dataBase.GetConnection();
 
         string commandText = "DELETE FROM dica WHERE id = @id";
         using NpgsqlCommand deleteCommand = new NpgsqlCommand(commandText, connection);
@@ -42,7 +43,7 @@ public class DicaService : BaseService<DicaModel>
     public override void Update(DicaModel model)
     {
         //pegar a conexão com o postgres
-        using NpgsqlConnection connection = this._dataBase.GetConnection();
+        using NpgsqlConnection connection = (NpgsqlConnection)this._dataBase.GetConnection();
 
         string commandText = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id";
         using NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
@@ -56,7 +57,7 @@ public class DicaService : BaseService<DicaModel>
     public override List<DicaModel> Read()
     {
         //pegar a conexão com o postgres
-        using NpgsqlConnection connection = this._dataBase.GetConnection();
+        using NpgsqlConnection connection = (NpgsqlConnection)this._dataBase.GetConnection();
 
         string commandText = "SELECT * FROM dica";
         using NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
@@ -80,7 +81,7 @@ public class DicaService : BaseService<DicaModel>
     public override DicaModel ReadById(int id)
     {
         //pegar a conexão com o postgres
-        using NpgsqlConnection connection = this._dataBase.GetConnection();
+        using NpgsqlConnection connection = (NpgsqlConnection)this._dataBase.GetConnection();
 
         string commandText = "SELECT * FROM dica WHERE id = @id";
         using NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);

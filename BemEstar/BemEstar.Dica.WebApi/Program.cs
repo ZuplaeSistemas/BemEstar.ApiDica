@@ -1,3 +1,5 @@
+using BemEstar.Dica.Infra.Db;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
@@ -17,7 +19,18 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
-        var app = builder.Build();
+builder.Configuration
+                .SetBasePath(AppContext.BaseDirectory) //Definir local padrão para acessar as confirgurações como o diretório onde está rodando a aplicação
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddUserSecrets<Program>()
+                .AddEnvironmentVariables();
+
+//Injeção de Dependência
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddSingleton<BemEstar.Dica.Infra.Config.AppConfiguration>();
+builder.Services.AddSingleton<NpgsqlConnectionFactory>();
+builder.Services.AddScoped<BemEstar.Dica.Services.DicaService>();
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
