@@ -11,7 +11,7 @@ namespace BemEstar.Dica.Infra.Repositories
         int Create(T entity);
 
         List<T> Read();
-        T REadById(int id);
+        T ReadById(int id);
         void Update(T entity);
         void Delete(int id);
         bool Exists(int id);

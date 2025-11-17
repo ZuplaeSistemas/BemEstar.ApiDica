@@ -128,10 +128,10 @@ namespace BemEstar.Dica.Infra.Repositories
         {
             //pegar a conexão com o postgres
             using NpgsqlConnection connection = (NpgsqlConnection)this._dbConnectionFactory.GetConnection();
-            var props = entity.GetType().GetProperties().where(p => p.Name != "Id");
-            string setClause = string.Join(", ", props.Select(p => ${p.Name.ToLower()}= @{p.Name.ToLower()}"));
+            var props = entity.GetType().GetProperties();
+            string setClause = string.Join(", ", props.where(p => p.Name != "Id").Select(p => ${p.Name.ToLower()}= @{p.Name.ToLower()}"));
 
-            string commandText = $"UPDATE dica SET {SetClause} WHERE id = @id";
+            string commandText = $"UPDATE {tablename} SET {SetClause} WHERE id = @id";
             using NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
             
             var propertiesValues = props.ToDictionary(p => p.Name.ToLower(), p => p.GetValue(entity, null));
