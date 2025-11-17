@@ -14,9 +14,9 @@ namespace BemEstar.Dica.Infra.Config
         {
             this._configuration = configuration;
         }
-        public string GetConnectionString() 
+        public string GetConnectionString(string dbName) 
         {
-            return _configuration.GetConnectionString("Postgres");
+            return _configuration.GetConnectionString(dbName);
         }
     }
 }
