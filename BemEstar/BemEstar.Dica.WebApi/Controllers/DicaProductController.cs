@@ -5,23 +5,23 @@ namespace BemEstar.Dica.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DicaController : ControllerBase
+    public class DicaProductController : ControllerBase
     {
         private DicaService _service;
-        public DicaController(DicaService service)
+        public DicaProductController(DicaService service)
         {
             _service = service;                            
         }
 
         [HttpGet]
-        public List<DicaModel> Get()
+        public List<DicaProduct> Get()
         {
             return this._service.Read();
         }
 
 
         [HttpGet("{id}")]
-        public DicaModel Get(int id)
+        public DicaProduct Get(int id)
         {
             return this._service.ReadById(id);
         }
@@ -34,18 +34,18 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] DicaModel model)
+        public void Post([FromBody] DicaProduct model)
         {
             this._service.Create(model);
         }
 
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] DicaModel model)
+        public void Put(int id, [FromBody] DicaProduct model)
         {
             if (id != model.Id)
             {
-                throw new ArgumentException("O ID do Objeto Person não é igual ao Id da URL.");
+                throw new ArgumentException("O ID do Objeto DicaProduct não é igual ao Id da URL.");
             }
             this._service.Update(model);
         }

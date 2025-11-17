@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BemEstar.Dica.Infra.Repositories
 {
-    public class DicaRepository : RepositoryInMemory<DicaModel>
+    public class DicaProductRepository : RepositoryInMemory<DicaProduct>
     {
-        public PersonRepository(IDbConnectionFactory factory)
+        public DicaProductRepository(IDbConnectionFactory factory)
         {
             
          }

@@ -15,7 +15,7 @@ namespace BemEstar.Dica.Infra.Repositories
         private readonly string tablename = typeof(T).Name.ToLower();
         public RepositoryInDbPostgres(IDbConnectionFactory dbConnectionFactory)
         {
-             this._dbConnectionFactory = dbConnectionFactory;
+            this._dbConnectionFactory = dbConnectionFactory;
         }
         public int Create(T entity)
         {
@@ -27,9 +27,9 @@ namespace BemEstar.Dica.Infra.Repositories
             var props = entity.GetType().GetProperties();
             //Montar a query dinamicamente - Via Linq (Forma de fazer o Join/Where/Dictionary) e Reflection (Forma de caapturar dados de forma genérica)
             string columns = string.Join(", ", props.Where(p => p.Name != "Id").Select(p => p.Name.ToLower()));//Forma mais completa e mais rápida porém mais complexa de segmentar as colunas e valores das linhas da tabela
-            string parameters = string.Join(", ",props.Where(p => p.Name != "Id").Select(p => "@" + p.Name.ToLower()));
-            var propertiesValues = props.Where(p => p.Name != "Id").ToDictionary(p => p.Name.ToLower(), p => p.GetValue(entity, null));     
-            
+            string parameters = string.Join(", ", props.Where(p => p.Name != "Id").Select(p => "@" + p.Name.ToLower()));
+            var propertiesValues = props.Where(p => p.Name != "Id").ToDictionary(p => p.Name.ToLower(), p => p.GetValue(entity, null));
+
             string commandText = $"INSERT INTO {tablename} {columns} values{parameters})";//Interpolação de string
             using NpgsqlCommand insertCommand = new NpgsqlCommand(commandText, connection);
             foreach (var item in propertiesValues)
@@ -54,7 +54,13 @@ namespace BemEstar.Dica.Infra.Repositories
 
         public bool Exists(int id)
         {
-            throw new NotImplementedException();
+            using NpgsqlConnection connection = (NpgsqlConnection)this._dbConnectionFactory.GetConnection();
+            string CommandText = $"SELECT 1 FROM {tablename} WHERE id = @id LIMIT 1";
+            existsCommand.Parameters.AddWithValue("id", id);
+
+            using NpgsqlDataReader dataReader = existsCommand.ExecuteReader();
+
+            return dataReader.Read();
         }
 
         public List<T> Read()
@@ -67,19 +73,25 @@ namespace BemEstar.Dica.Infra.Repositories
 
             using NpgsqlDataReader dataReader = selectCommand.ExecuteReader();
 
-            List<DicaModel> dicaList = new List<DicaModel>();
+            List<T> dicaList = new List<T>();
+            var props = typeof(T).GetProperties();
 
             while (dataReader.Read())
             {
-                DicaModel dicaModel = new DicaModel();
-                dicaModel.Id = Convert.ToInt32(dataReader["id"]);
-                dicaModel.Titulo = dataReader["titulo"].ToString();
-                dicaModel.Descricao = dataReader["descricao"].ToString();
-                dicaModel.Categoria = dataReader["categoria"].ToString();
+                T entity = (T)Activator.CreateInstance(typeof(T));//Cria uma nova instância do elemento genérico
+                foreach (var prop in props)
+                {
+                    if (dataReader[prop.Name.ToLower()] == null) //hasColumns
+                        continue;
 
-                dicaList.Add(dicaModel);
+                    var colValue = dataReader[prop.Name.ToLower()];
+                    if (colValue != DBNull.Value)
+                        prop.SetValue(entity, Convert.ChangeType(colValue, prop.PropertyType));  //Quando tem só uma linha o if pode ser sem as chaves                                         
+                }
+
+                dicaList.Add(entity);
             }
-            return new List<T>();
+            return dicaList;
         }
 
         public T ReadById(int id)
@@ -87,36 +99,46 @@ namespace BemEstar.Dica.Infra.Repositories
             public DicaModel ReadById(int id)
 
             //pegar a conexão com o postgres
-            using NpgsqlConnection connection = (NpgsqlConnection)this._dbConnectionFactory.GetConnection();
+            using NpgsqlConnection connection = (NpgsqlConnection) this._dbConnectionFactory.GetConnection();
 
             string commandText = $"SELECT * FROM {tablename} WHERE id = @id";
             using NpgsqlCommand selectCommand = new NpgsqlCommand(commandText, connection);
             selectCommand.Parameters.AddWithValue("id", id);
 
-            NpgsqlDataReader dataReader = selectCommand.ExecuteReader();
+            using NpgsqlDataReader dataReader = selectCommand.ExecuteReader();
+            T entity = (T)Activator.CreateInstance(typeof(T));
+            var props = typeof(T).GetProperties();
 
-            DicaModel dicaModel = new DicaModel();
             if (dataReader.Read())
             {
-                dicaModel.Id = Convert.ToInt32(dataReader["id"]);
-                dicaModel.Titulo = dataReader["titulo"].ToString();
-                dicaModel.Descricao = dataReader["descricao"].ToString();
-                dicaModel.Categoria = dataReader["categoria"].ToString();
+                foreach(var prop in props)
+                {
+                    if (dataReader[prop.Name.ToLower()] == null) //hasColumns
+                        continue;
+                    
+                    var colValue = dataReader[prop.Name.ToLower()];
+                    if (colValue != DBNull.Value)
+                        prop.SetValue(entity, Convert.ChangeType(colValue, prop.PropertyType));  //Quando tem só uma linha o if pode ser sem as chaves                                         
+                }
             }
-            return (T)Activator.CreateInstance(typeof(T));
+            return entity;
         }
 
         public void Update(T entity)
         {
             //pegar a conexão com o postgres
             using NpgsqlConnection connection = (NpgsqlConnection)this._dbConnectionFactory.GetConnection();
+            var props = entity.GetType().GetProperties().where(p => p.Name != "Id");
+            string setClause = string.Join(", ", props.Select(p => ${p.Name.ToLower()}= @{p.Name.ToLower()}"));
 
-            string commandText = "UPDATE dica SET titulo = @titulo, descricao = @descricao, categoria = @categoria WHERE id = @id";
+            string commandText = $"UPDATE dica SET {SetClause} WHERE id = @id";
             using NpgsqlCommand updateCommand = new NpgsqlCommand(commandText, connection);
-            updateCommand.Parameters.AddWithValue("titulo", model.Titulo);
-            updateCommand.Parameters.AddWithValue("descricao", model.Descricao);
-            updateCommand.Parameters.AddWithValue("categoria", model.Categoria);
-            updateCommand.Parameters.AddWithValue("id", model.Id);
+            
+            var propertiesValues = props.ToDictionary(p => p.Name.ToLower(), p => p.GetValue(entity, null));
+            foreach (var item in propertiesValues)
+            {
+                updateCommand.Parameters.AddWithValue(item.Key, item.Value);
+            }
 
             updateCommand.ExecuteNonQuery();
         }

@@ -21,17 +21,19 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Configuration
-                .SetBasePath(AppContext.BaseDirectory) //Definir local padrão para acessar as confirgurações como o diretório onde está rodando a aplicação
+                .SetBasePath(AppContext.BaseDirectory) //Definir local padrï¿½o para acessar as confirguraï¿½ï¿½es como o diretï¿½rio onde estï¿½ rodando a aplicaï¿½ï¿½o
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddUserSecrets<Program>()
                 .AddEnvironmentVariables();
 
-//Injeção de Dependência
+//Injeï¿½ï¿½o de Dependï¿½ncia
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<BemEstar.Dica.Infra.Config.AppConfiguration>();
 builder.Services.AddSingleton<NpgsqlConnectionFactory>();
 builder.Services.AddScoped<DicaService>();
+builder.Services.AddScoped<DicaProductService>();
 builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaRepository>();
+builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaProductRepository>();
 
 
 var app = builder.Build();

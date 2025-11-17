@@ -7,4 +7,6 @@ public interface Iservice<T>
     T ReadById(int id);
     void Update(T model);
     void Delete(int id);
+
+    bool Exists(int id);
 }

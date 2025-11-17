@@ -35,6 +35,11 @@ namespace BemEstar.Dica.Services
             return _repository.ReadById(id);
         }
 
+        public virtual bool Exists(int id)
+        {
+            return _repository.Exists(id);
+        }
+
         public virtual void Update(T model)
         {
             _repository.Update(model);
