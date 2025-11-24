@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BemEstar.Dica.Infra.Repositories
 {
-    public class DicaRepository : RepositoryInMemory<DicaModel>
+    public class DicaRepository : RepositoryInMySql<DicaModel>
     {
-        public PersonRepository(IDbConnectionFactory factory)
+        public PersonRepository(IDbConnectionFactory factory):base(factory)
         {
             
-         }
+        }
     }
 }
