@@ -30,6 +30,7 @@ builder.Configuration
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<BemEstar.Dica.Infra.Config.AppConfiguration>();
 builder.Services.AddSingleton<IDbConnectionFactory, MySqlConnectionFactory>();
+//builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
 builder.Services.AddScoped<DicaService>();
 builder.Services.AddScoped<DicaProductService>();
 builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaRepository>();
