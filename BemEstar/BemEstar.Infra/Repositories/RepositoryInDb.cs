@@ -57,6 +57,8 @@ namespace BemEstar.Dica.Infra.Repositories
             parameter.ParameterName = "id";
             parameter.Value = id;
 
+            deleteCommand.Parameters.Add(parameter);
+
             deleteCommand.ExecuteNonQuery();
         }
 
@@ -68,8 +70,10 @@ namespace BemEstar.Dica.Infra.Repositories
             using IDbCommand existsCommand = CreateCommand(connection, commandText);
 
             IDbDataParameter parameter = existsCommand.CreateParameter();
-            parameter.ParameterName = "id";
+            parameter.ParameterName = "@id";
             parameter.Value = id;
+
+            existsCommand.Parameters.Add(parameter);
             
             using IDataReader dataReader = existsCommand.ExecuteReader();
 
@@ -117,6 +121,8 @@ namespace BemEstar.Dica.Infra.Repositories
             IDbDataParameter parameter = selectCommand.CreateParameter();
             parameter.ParameterName = "id";
             parameter.Value = id;
+
+            selectCommand.Parameters.Add(parameter);
 
             using IDataReader dataReader = selectCommand.ExecuteReader();
             T entity = (T)Activator.CreateInstance(typeof(T));
