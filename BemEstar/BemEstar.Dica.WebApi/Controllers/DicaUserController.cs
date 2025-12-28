@@ -7,22 +7,46 @@ namespace BemEstar.Dica.WebApi.Controllers
     [ApiController]
     public class DicaUserController : ControllerBase
     {
-        private readonly DicaUserService _service
-        public DicaUserController(DicaUserService service)
+        private readonly DicaUserService _service;
+        private readonly PersonService _personService;
+        public DicaUserController(DicaUserService service, PersonService personService)
         {
             _service = service;
+            _personService = personService;
         }
         [HttpGet]
-        public List<DicaUser> Get()
+        public List<DicaUserViewModel> Get()
         {
-            return this._service.Read();
+            List<USer> users = this._service.Read();
+           
+
+            List<DicaUserViewModel> listViewModel = new List<UserViewModel>();
+            foreach(var u in users)
+            {
+                DicaUserViewModel duvm = new DicaUserViewModel();
+                duvm.Id = u.Id;
+                duvm.Email = u.Email;
+        
+                duvm.CreatedAt = u.CreatedAt;
+                duvm.Person = this._personService.ReadById(u.Person_Id);
+                listViewModel.Add(duvm);
+            }
+            return listViewModel;
         }
 
 
         [HttpGet("{id}")]
-        public DicaUser Get(int id)
+        public DicaUserViewModel Get(int id)
         {
-            return this._service.ReadById(id);
+            DicaUser user = this._service.ReadById(id);
+            DicaUserViewModel duvm = new DicaUserViewModel();
+            duvm.Id = user.ID;
+            duvm.Email = user.Email;
+            duvm.Password = user.Password;
+            duvm.CreatedAt = user.CreatedAt;
+            duvm.Person = this._personService.ReadById(user.Person_Id);
+
+            return duvm;
         }
 
         [HttpGet("exist/{id}")]

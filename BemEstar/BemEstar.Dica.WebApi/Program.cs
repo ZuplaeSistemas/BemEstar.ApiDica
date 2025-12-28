@@ -33,11 +33,9 @@ builder.Services.AddSingleton<IDbConnectionFactory, MySqlConnectionFactory>();
 //builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
 
 builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaRepository>();
-builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaProductRepository>();
 builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaUserRepository>();
 
 builder.Services.AddScoped<DicaService>();
-builder.Services.AddScoped<DicaProductService>();
 builder.Services.AddScoped<DicaUserService>();
 
 var app = builder.Build();
