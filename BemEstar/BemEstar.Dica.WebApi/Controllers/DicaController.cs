@@ -7,7 +7,11 @@ namespace BemEstar.Dica.WebApi.Controllers
     [ApiController]
     public class DicaController : ControllerBase
     {
-        private DicaService _service = new DicaService();
+        private DicaService _service;
+        public DicaController(DicaService service)
+        {
+            _service = service;                            
+        }
 
         [HttpGet]
         public List<DicaModel> Get()
@@ -20,6 +24,12 @@ namespace BemEstar.Dica.WebApi.Controllers
         public DicaModel Get(int id)
         {
             return this._service.ReadById(id);
+        }
+
+        [HttpGet("exist/{id}")]
+        public bool Exists(int id)
+        {
+            return this._service.Exists(id);
         }
 
 
@@ -42,9 +52,19 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public StatusCodeResult Delete(int id)
         {
-            this._service.Delete(id);
+            try{
+                this._service.Delete(id);
+                StatusCodeResult result = new StatusCodeResult(204);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                StatusCodeResult result = new StatusCodeResult(500);
+                return result;
+            }
+           
         }
     }
 }
