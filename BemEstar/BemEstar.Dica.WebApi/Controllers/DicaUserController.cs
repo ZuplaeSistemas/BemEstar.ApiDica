@@ -17,6 +17,24 @@ namespace BemEstar.Dica.WebApi.Controllers
         [HttpGet]
         public List<DicaUserViewModel> Get()
         {
+<<<<<<< HEAD
+            List<USer> users = this._service.Read();
+           
+
+            List<DicaUserViewModel> listViewModel = new List<UserViewModel>();
+            foreach(var u in users)
+            {
+                DicaUserViewModel duvm = new DicaUserViewModel();
+                duvm.Id = u.Id;
+                duvm.Email = u.Email;
+                duvm.Password = u.Password;
+                duvm.Person_Id = u.Person_Id;
+                duvm.CreatedAt = u.CreatedAt;
+                duvm.Person = this._personService.ReadById(u.Person_Id);
+                listViewModel.Add(duvm);
+            }
+            return listViewModel;
+=======
             List<USer> users = this._service.Read();
            
 
@@ -32,12 +50,25 @@ namespace BemEstar.Dica.WebApi.Controllers
                 listViewModel.Add(duvm);
             }
             return listViewModel;
+>>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
         }
 
 
         [HttpGet("{id}")]
         public DicaUserViewModel Get(int id)
         {
+<<<<<<< HEAD
+            DicaUser user = this._service.ReadById(id);
+            DicaUserViewModel duvm = new DicaUserViewModel();
+            duvm.Id = user.ID;
+            duvm.Email = user.Email;
+            duvm.Password = user.Password;
+            duvm.Person_Id = user.Person_Id;
+            duvm.CreatedAt = user.CreatedAt;
+            duvm.Person = this._personService.ReadById(user.Person_Id);
+
+            return duvm;
+=======
             DicaUser user = this._service.ReadById(id);
             DicaUserViewModel duvm = new DicaUserViewModel();
             duvm.Id = user.ID;
@@ -47,6 +78,7 @@ namespace BemEstar.Dica.WebApi.Controllers
             duvm.Person = this._personService.ReadById(user.Person_Id);
 
             return duvm;
+>>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
         }
 
         [HttpGet("exist/{id}")]

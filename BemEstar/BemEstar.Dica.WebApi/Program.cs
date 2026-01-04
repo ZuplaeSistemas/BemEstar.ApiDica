@@ -32,11 +32,12 @@ builder.Services.AddSingleton<BemEstar.Dica.Infra.Config.AppConfiguration>();
 builder.Services.AddSingleton<IDbConnectionFactory, MySqlConnectionFactory>();
 //builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlConnectionFactory>();
 
-builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaRepository>();
-builder.Services.AddScoped<BemEstar.Dica.Infra.Repositories.DicaUserRepository>();
+builder.Services.AddScoped<DicaRepository>();
+builder.Services.AddScoped<DicaUserRepository>();
 
 builder.Services.AddScoped<DicaService>();
 builder.Services.AddScoped<DicaUserService>();
+builder.Services.AddScoped<DAuthService>();
 
 var app = builder.Build();
 

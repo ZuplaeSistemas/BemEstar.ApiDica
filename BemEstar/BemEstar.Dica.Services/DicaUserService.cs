@@ -12,6 +12,13 @@ public class DicaUserService : Service<DicaUser>
     {
 
     }
+<<<<<<< HEAD
+    public override int Create(User model)
+    {
+        model.Password = model.Password.GetHashCode().ToString();
+        return base.Create(model);
+    }
+=======
     public override int Create(User model)
     {
         model.Password = model.Password.GetHashCode().ToString();
@@ -33,6 +40,7 @@ public class DicaUserService : Service<DicaUser>
             {
                 throw new Exception("Invalid password or email");
             }
+>>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
 
         });
     }
