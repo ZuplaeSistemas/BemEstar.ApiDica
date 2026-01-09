@@ -38,7 +38,8 @@ amespace BemEstar.Dica.Services;
                     {
                         new Claim(ClaimTypes.Email, model.Email),
                         new Claim("UserId", model.Id.ToString()),
-                        new Claim("PersonId", model.Person_Id.ToString()
+                        new Claim("PersonId", model.Person_Id.ToString(),
+                        new Claim(ClaimTypes.Role, "Admin")
                     };
 
                     var key = new SymetricSecurityKey(Encoding.UTF8.GetBytes("ZuplaeKey2026"));
@@ -47,7 +48,7 @@ amespace BemEstar.Dica.Services;
 
                     var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
                         Issuer: "Dica",
-                        AuthorityKeyIdentifierStructure: "DicaApiClient",
+                        Audience: "DicaApiClient",
                         claims: claims,
                         Expires: expiration,
                         signingCredentials: creds

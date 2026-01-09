@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BemEstar.Dica.WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
 
     public class DicaController : ControllerBase
