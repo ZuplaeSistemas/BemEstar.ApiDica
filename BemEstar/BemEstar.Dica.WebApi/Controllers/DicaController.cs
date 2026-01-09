@@ -1,10 +1,12 @@
 using BemEstar.Dica.Models;
 using BemEstar.Dica.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace BemEstar.Dica.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class DicaController : ControllerBase
     {
         private DicaService _service;
