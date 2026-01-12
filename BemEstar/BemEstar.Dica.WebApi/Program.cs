@@ -18,7 +18,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options=>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo{Title = "AulasWebApi", Version= "v1"})
-    var securitySchema
+    var securitySchema new OpenApiSecurityScheme
+    {
+        Name: "Authorization",
+        Description = "Digite '{Token}'",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http, //Http insere o bearer automaticamente, o ApiKey não insere o bearer automaticamente.
+        Reference = new OpenApiRefence
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+    options.AddSecurityDefinition("Bearer", securitySchema);
+    var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {securitySchema, Array.Empty<string>()}
+    };
+    options.AddSecurityRequirement(securityRequirement);
     
 }
 
@@ -52,7 +69,15 @@ builder.Services.AddScoped<DicaUserRepository>();
 
 builder.Services.AddScoped<DicaService>();
 builder.Services.AddScoped<DicaUserService>();
-builder.Services.AddScoped<DAuthService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<>(JwtTokenService);
+
+
+//O maior ganho de performance é buscar a maior quantidade de dados apenas uma vez e tratar eles, menor quantidade de I/O.
+var jwtSection = builder.Configuration.GetSection("Jwt");
+var issuer = jwtSection["Issuer"]; 
+var audience = jwtSection["Audience"];
+var key = jwtSection["Key"];
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -64,9 +89,9 @@ builder.Services
            ValidateAudience = true,
            ValidateLifetime = true,
            ValidateIssuerSigningKey = true,
-           ValidIssuer = builder.Configuration["Jwt:Issuer"],
-           ValidAudience = builder.Configuration["Jwt:Audience"],
-           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"])),
+           ValidIssuer = issuer,
+           ValidAudience = audience,
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
            RoleClaimType = ClaimTypes.Role
        };
     });

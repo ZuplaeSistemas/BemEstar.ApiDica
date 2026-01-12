@@ -53,7 +53,7 @@ namespace BemEstar.Dica.WebApi.Controllers
             this._service.Update(model);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public StatusCodeResult Delete(int id)
         {
