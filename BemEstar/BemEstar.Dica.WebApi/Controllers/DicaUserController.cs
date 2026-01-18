@@ -1,5 +1,6 @@
 using BemEstar.Dica.Models;
 using BemEstar.Dica.Services;
+using BemEstar.Dica.WebApi.DicaViewModel;
 using Microsoft.AspNetCore.Mvc;
 namespace BemEstar.Dica.WebApi.Controllers
 {
@@ -21,10 +22,10 @@ namespace BemEstar.Dica.WebApi.Controllers
             List<USer> users = this._service.Read();
            
 
-            List<DicaUserViewModel> listViewModel = new List<UserViewModel>();
+            List<DicaUserResponseViewModel> listViewModel = new List<DicaUserResponseViewModel>();
             foreach(var u in users)
             {
-                DicaUserViewModel duvm = new DicaUserViewModel();
+                DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
                 duvm.Id = u.Id;
                 duvm.Email = u.Email;
                 duvm.Password = u.Password;
@@ -38,10 +39,10 @@ namespace BemEstar.Dica.WebApi.Controllers
             List<USer> users = this._service.Read();
            
 
-            List<DicaUserViewModel> listViewModel = new List<UserViewModel>();
+            List<DicaUserResponseViewModel> listViewModel = new List<DicaUserResponseViewModel>();
             foreach(var u in users)
             {
-                DicaUserViewModel duvm = new DicaUserViewModel();
+                DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
                 duvm.Id = u.Id;
                 duvm.Email = u.Email;
         
@@ -55,11 +56,11 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpGet("{id}")]
-        public DicaUserViewModel Get(int id)
+        public DicaUserResponseViewModel Get(int id)
         {
 <<<<<<< HEAD
             DicaUser user = this._service.ReadById(id);
-            DicaUserViewModel duvm = new DicaUserViewModel();
+            DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
             duvm.Id = user.ID;
             duvm.Email = user.Email;
             duvm.Password = user.Password;
@@ -70,7 +71,7 @@ namespace BemEstar.Dica.WebApi.Controllers
             return duvm;
 =======
             DicaUser user = this._service.ReadById(id);
-            DicaUserViewModel duvm = new DicaUserViewModel();
+            DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
             duvm.Id = user.ID;
             duvm.Email = user.Email;
             duvm.Password = user.Password;
@@ -89,19 +90,30 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] DicaUser model)
+        public IActionResult Post([FromBody] DicaUserRequestViewModel viewModel)
         {
+            User model = new User
+            {
+                Email = viewModel.Email;
+                Password = viewModel.Password;
+                Person_Id = viewModel.Person_Id;
+            };
             this._service.Create(model);
+            return Created();
         }
 
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] DicaUser model)
+        public void Put(int id, [FromBody] UserPasswordViewModel model)
         {
             if (id != model.Id)
             {
                 throw new ArgumentException("O ID do Objeto DicaUser não é igual ao Id da URL.");
             }
+            User userToUpdate = new User();
+            userToUpdate.Id = model.Id;
+            userToUpdate.Password = model.Password;
+
             this._service.Update(model);
         }
 

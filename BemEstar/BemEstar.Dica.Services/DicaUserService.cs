@@ -12,37 +12,29 @@ public class DicaUserService : Service<DicaUser>
     {
 
     }
-<<<<<<< HEAD
     public override int Create(User model)
     {
         model.Password = model.Password.GetHashCode().ToString();
         return base.Create(model);
     }
-=======
     public override int Create(User model)
     {
         model.Password = model.Password.GetHashCode().ToString();
         return base.Create(model);
+    
     }
-    public bool Login(string email, string password)
+
+    public override void Update(User model)
     {
-        base.Read().foreach(user =>
+        User existingUser = ReadById(model.Id);
+        if(existingUser != null)
         {
-            if(user.Email == email)
-            {
-                var result = _passwordHasher.VerifyHashedPassword(user.Password, password)
-                if(result == PasswordVerificationResult.Sucess)
-                {
-                    throw new Exception("Login sucessful");
-                }
-            }
-            else
-            {
-                throw new Exception("Invalid password or email");
-            }
->>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
-
-        });
+            model.Email = existingUser.Email; // Evita que o email seja alterado
+            model.Person_Id = existingUser.Person_Id; //Evita que o Person_Id seja alterado
+            model.Password = _passwordHasher.HashPassword(model.Password);
+            base.Update(model);
+        }
+        model.Password = _passwordHasher.HashPassword(model.Password);
+        base.Update(model);
     }
-
 }

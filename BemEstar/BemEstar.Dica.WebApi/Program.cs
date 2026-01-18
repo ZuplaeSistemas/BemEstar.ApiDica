@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using BemEstar.Dica.Infra.Db;
 using BemEstar.Dica.Services;
+using BemEstar.Dica.WebApi.DicaViewModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -72,12 +73,21 @@ builder.Services.AddScoped<DicaUserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<>(JwtTokenService);
 
+//builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+//A linha de cima está fazendo o carregamento automático dessas linhas abaixo:
+//JwtOptions option = new JwtOptions();
+//option.Issuer = builder.Configuration["Jwt:Issuer"];
+//option.Audience = builder.Configuration["Jwt: Audience"];
+//option.Key = builder.Configuration["Jwt:key"];
+
 
 //O maior ganho de performance é buscar a maior quantidade de dados apenas uma vez e tratar eles, menor quantidade de I/O.
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var issuer = jwtSection["Issuer"]; 
 var audience = jwtSection["Audience"];
 var key = jwtSection["Key"];
+
+builder.Services.Configure<JwtOptions>(jwtSection);
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -6,14 +6,16 @@ using BemEstar.Dica.Models;
 using Microsoft.AspNet.Identity;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.X509.Extension;
+using BemEstar.Dica.WebApi.Utils;
 
 namespace BemEstar.Dica.Services;
 
     public class JwtTokenService
     {
-        public JwtTokenService(IOptions<JwtOptions>)
+        private readonly JwtOptions _jwtOptions;
+        public JwtTokenService(IOptions<JwtOptions>jwtOptions)
         {
-
+            this._jwtOptions = jwtOptions.Value;
         }
 
         public string GenerateToken()
@@ -30,13 +32,13 @@ namespace BemEstar.Dica.Services;
                         new Claim(ClaimTypes.Role, "Admin")
                     };
 
-                    var key = new SymetricSecurityKey(Encoding.UTF8.GetBytes("ZuplaeKey2026"));
+                    var key = new SymetricSecurityKey(Encoding.UTF8.GetBytes(this._jwtOptions.key));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                     var expiration = DateTime.Now.AddHours(2);
 
                     var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-                        Issuer: "Dica",
-                        Audience: "DicaApiClient",
+                        Issuer: this._jwtOptions.Issuer,
+                        Audience: this._jwtOptions.Audience,
                         claims: claims,
                         Expires: expiration,
                         signingCredentials: creds
