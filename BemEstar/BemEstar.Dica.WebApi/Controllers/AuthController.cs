@@ -16,10 +16,21 @@ namespace BemEstar.Dica.WebApi.Controllers
             this._service = service;
         }
         [HttpPost("Login")] //Método Post é para informações sensíveis
-        public string Login(string email, string password)
+        public IActionResult Login(AuthLoginRequest request)
         {
-            string retorno = this._service.Login(email, password);
-            return retorno;
+
+            try
+            {
+                string retorno = this._service.Login(request.Email, request.Password);
+                AuthLoginResponse response = new AuthLoginResponse();
+                response.Token = retorno;
+                response.Message = "Login realizado com sucesso";
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new {Message = ex.Message});
+            }
         }
         [HttpPost("Logout")]
         public string Logout(int userId)

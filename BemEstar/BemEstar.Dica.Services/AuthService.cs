@@ -37,10 +37,7 @@ namespace BemEstar.Dica.Services;
 
                 }
             }
-            else
-            {
-                return "Usuário ou senha inválido";
-            }
+            throw new Exception("Usuário ou senha inválido");
         }
         
         public string Logout(int userId)
