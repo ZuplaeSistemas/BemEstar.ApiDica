@@ -16,81 +16,56 @@ namespace BemEstar.Dica.WebApi.Controllers
             _personService = personService;
         }
         [HttpGet]
-        public List<DicaUserViewModel> Get()
+        public IActionResult Get()
         {
-<<<<<<< HEAD
-            List<USer> users = this._service.Read();
+            List<USer> model = this._service.Read();
            
-
-            List<DicaUserResponseViewModel> listViewModel = new List<DicaUserResponseViewModel>();
-            foreach(var u in users)
+            List<DicaUserResponseViewModel> response = new List<DicaUserResponseViewModel>();
+            foreach(var u in model)
             {
-                DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
-                duvm.Id = u.Id;
-                duvm.Email = u.Email;
-                duvm.Password = u.Password;
-                duvm.Person_Id = u.Person_Id;
-                duvm.CreatedAt = u.CreatedAt;
-                duvm.Person = this._personService.ReadById(u.Person_Id);
-                listViewModel.Add(duvm);
+                DicaUserResponseViewModel userResponse = new DicaUserResponseViewModel();
+                userResponse.Id = u.Id;
+                userResponse.Email = u.Email;
+                userResponse.Password = u.Password;
+                userResponse.Person_Id = u.Person_Id;
+                userResponse.CreatedAt = u.CreatedAt;
+                userResponse.Person = this._personService.ReadById(u.Person_Id);
+                response.Add(userResponse);
             }
-            return listViewModel;
-=======
-            List<USer> users = this._service.Read();
-           
-
-            List<DicaUserResponseViewModel> listViewModel = new List<DicaUserResponseViewModel>();
-            foreach(var u in users)
-            {
-                DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
-                duvm.Id = u.Id;
-                duvm.Email = u.Email;
-        
-                duvm.CreatedAt = u.CreatedAt;
-                duvm.Person = this._personService.ReadById(u.Person_Id);
-                listViewModel.Add(duvm);
-            }
-            return listViewModel;
->>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
+            return Ok(response);
         }
 
 
         [HttpGet("{id}")]
-        public DicaUserResponseViewModel Get(int id)
+        public IActionResult Get(int id)
         {
-<<<<<<< HEAD
-            DicaUser user = this._service.ReadById(id);
-            DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
-            duvm.Id = user.ID;
-            duvm.Email = user.Email;
-            duvm.Password = user.Password;
-            duvm.Person_Id = user.Person_Id;
-            duvm.CreatedAt = user.CreatedAt;
-            duvm.Person = this._personService.ReadById(user.Person_Id);
-
-            return duvm;
-=======
-            DicaUser user = this._service.ReadById(id);
-            DicaUserResponseViewModel duvm = new DicaUserResponseViewModel();
-            duvm.Id = user.ID;
-            duvm.Email = user.Email;
-            duvm.Password = user.Password;
-            duvm.CreatedAt = user.CreatedAt;
-            duvm.Person = this._personService.ReadById(user.Person_Id);
-
-            return duvm;
->>>>>>> bb02fbf4863774235fd56894b698f9377f2ad563
+            DicaUser model = this._service.ReadById(id);
+            DicaUserGetResponse response = new DicaUserGetResponse
+            {
+                Id = model.Id;
+                Email = model.Email;
+                Password = model.Password;
+                Person_Id = model.Person_Id;
+                CreatedAt = model.CreatedAt;
+                Person = this._personService.ReadById(user.Person_Id);
+            };
+            return Ok(response);
         }
 
         [HttpGet("exist/{id}")]
-        public bool Exists(int id)
+        public IActionResult Exists(int id)
         {
-            return this._service.Exists(id);
+            ExistResponse response = new ExistResponse
+            {
+                Id = id;
+                Exist = this.service.Exists(id);
+            }; 
+            return Ok(response);
         }
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] DicaUserRequestViewModel viewModel)
+        public IActionResult Post([FromBody] DicaUserPostRequest viewModel)
         {
             User model = new User
             {
@@ -104,17 +79,15 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] UserPasswordViewModel model)
+        public IActionResult Put(int id, [FromBody] UserPutRequest request)
         {
-            if (id != model.Id)
-            {
-                throw new ArgumentException("O ID do Objeto DicaUser não é igual ao Id da URL.");
-            }
-            User userToUpdate = new User();
-            userToUpdate.Id = model.Id;
-            userToUpdate.Password = model.Password;
+            User model = new User();
+            model.Id = id;
+            model.Password = request.Password;
 
             this._service.Update(model);
+
+            return NoContent();
         }
 
 

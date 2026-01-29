@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Mysqlx;
 namespace BemEstar.Dica.WebApi.DicaViewModel
 {
-    public class UserPasswordViewModel : BaseViewModel
+    public class UserPutRequest
     {
-        [Required(ErrorMessage = "O campo 'Senha' é obrigatório.")]
+        [Required(ErrorMessage = "A senha precisa ser preenchida")]
+        [MinLength(3, ErrorMessage = "O campo senha deve ter no mínimo 3 caracteres.")]
         public string Password {get; set;}
     }
 }

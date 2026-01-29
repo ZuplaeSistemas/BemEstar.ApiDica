@@ -3,7 +3,7 @@ using BemEstar.Dica.Services;
 using Microsoft.AspNetCore.Mvc;
 namespace BemEstar.Dica.WebApi.DicaViewModel
 {
-    public class DicaUserResponseViewModel : BaseViewModel
+    public class DicaUserGetResponse : BaseViewModel
     {
         public string Email {get; set;}
 
