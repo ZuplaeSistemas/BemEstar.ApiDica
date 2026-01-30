@@ -92,12 +92,12 @@ namespace BemEstar.Dica.WebApi.Controllers
 
 
         [HttpDelete("{id}")]
-        public StatusCodeResult Delete(int id)
+        public IActionResult Delete(int id)
         {
             try{
                 this._service.Delete(id);
                 StatusCodeResult result = new StatusCodeResult(204);
-                return result;
+                return NoContent();
             }
             catch (Exception ex)
             {
