@@ -1,0 +1,11 @@
+using BemEstar.Dica.Models;
+using BemEstar.Dica.Services;
+using Microsoft.AspNetCore.Mvc;
+namespace BemEstar.Dica.WebApi.DicaViewModel
+{
+    public class BaseViewModel
+    {
+        public int Id {get; set;}
+        public DateTime CreatedAt {get; set;} = DateTime.Now;
+    }
+}
